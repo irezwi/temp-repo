@@ -93,10 +93,6 @@ void ConvertToIeeeExtended(long double num, char *bytes)
         }
     }
 
-    // e = expon;
-    // s = expon >> 15;
-    // m = (hiMant << 32) + loMant;
-
     bytes[0] = expon >> 8;
     bytes[1] = expon;
     bytes[2] = hiMant >> 24;
