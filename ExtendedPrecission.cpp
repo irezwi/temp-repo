@@ -13,6 +13,7 @@ std::string ExtendedPrecission::toString()
         {
             s += ((c & (1 << i)) ? '1' : '0');
         }
+        s += ' ';
     }
     return s;
 }
@@ -20,6 +21,8 @@ std::string ExtendedPrecission::toString()
 ExtendedPrecission::ExtendedPrecission(long double num)
 {
     ConvertToIeeeExtended(num, this->byteBuffer);
+    // this->exponent = (this->byteBuffer[0] << 8) + byteBuffer[1];
+    // std::cout << this->exponent << std::endl;
 }
 
 std::string ExtendedPrecission::intToBinaryString(long long int num)
