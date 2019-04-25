@@ -1,2 +1,6 @@
 *.out
 *.vscode
+test/CMakeFiles
+test/CMakeCache.txt
+test/cmake_install.cmake
+test/executeTests

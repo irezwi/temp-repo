@@ -3,10 +3,11 @@
 
 void ConvertToIeeeExtended(long double num, char *bytes);
 void printBinary(char c);
+void conv();
 
 std::string ExtendedPrecission::toString()
 {
-    std::string s = "";
+    /*std::string s = "";
     for (auto &c : this->byteBuffer)
     {
         for (int i = 7; i >= 0; --i)
@@ -15,14 +16,63 @@ std::string ExtendedPrecission::toString()
         }
         s += ' ';
     }
+    return s;*/
+    std::string s = "";
+    s += intToBinaryString(this->sign);
+    s += " ";
+    s += intToBinaryString(this->exponent);
+    s += " ";
+    s += intToBinaryString(this->mantissa);
+    if (s.length() < 82)
+    {
+        for (int i = s.length(); i < 82; i++)
+        {
+            s += "0";
+        }
+    }
     return s;
 }
 
 ExtendedPrecission::ExtendedPrecission(long double num)
 {
     ConvertToIeeeExtended(num, this->byteBuffer);
-    // this->exponent = (this->byteBuffer[0] << 8) + byteBuffer[1];
-    // std::cout << this->exponent << std::endl;
+
+    // Set exponent field
+    uint16_t exp = 0;
+    exp = (this->byteBuffer[0] & 0b01111111);
+    exp = exp << 8;
+    exp += this->byteBuffer[1];
+    this->exponent = exp;
+
+    // Set sign field
+    uint8_t s = (int)this->byteBuffer[0];
+    s = s >> 7;
+    this->sign = s;
+
+    // Set mantissa field
+    int byteWithLastOne = 2;
+    for (int i = byteWithLastOne; i < 10; i++)
+    {
+        if ((int)this->byteBuffer[i] != 0)
+        {
+            byteWithLastOne = i;
+        }
+    }
+    uint64_t man = 0;
+    uint64_t manMask = 0b0000000000000000000000000000000000000000000000000000000011111111;
+    man = this->byteBuffer[2];
+    for (int i = 2; i != byteWithLastOne; i++)
+    {
+        man = man << 8;
+        man += this->byteBuffer[i];
+        manMask = manMask << 8;
+        manMask += 0b11111111;
+    }
+    this->mantissa = man & manMask;
+
+    std::cout << "sign: " << std::to_string(this->sign) << std::endl;
+    std::cout << "exponent: " << this->exponent << std::endl;
+    std::cout << "mantissa: " << this->mantissa << std::endl;
 }
 
 std::string ExtendedPrecission::intToBinaryString(long long int num)
@@ -121,4 +171,90 @@ void printBinary(char c)
     {
         std::cout << ((c & (1 << i)) ? '1' : '0');
     }
+}
+
+ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
+{
+    ExtendedPrecission result(0.0);
+    if (this->sign == 1 && num.sign == 1)
+        result.sign = 1;
+    if (this->sign == 0 && num.sign == 0)
+        result.sign = 0;
+
+    return result;
+}
+
+bool ExtendedPrecission::operator==(ExtendedPrecission num)
+{
+    if (this->sign == num.getSign() && this->exponent == num.getExponent() && this->mantissa == num.getMantissa())
+    {
+        return true;
+    }
+    return false;
+}
+
+bool ExtendedPrecission::operator>(ExtendedPrecission num)
+{
+    if (this->sign < num.getSign())
+    {
+        return true;
+    }
+    else if (this->sign == num.getSign())
+    {
+        if (this->exponent > num.getExponent())
+        {
+            return true;
+        }
+        else if (this->exponent == num.getExponent())
+        {
+            if (this->mantissa > num.getMantissa())
+            {
+                return true;
+            }
+            else if (this->mantissa == num.getMantissa())
+            {
+                return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool ExtendedPrecission::operator<(ExtendedPrecission num)
+{
+    if (*this > num || *this == num)
+        return false;
+    return true;
+}
+
+void conv()
+{
+    __uint128_t a = 0b00000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000;
+    std::cout << std::bitset<128>(a).to_string();
+}
+
+uint8_t ExtendedPrecission::getSign()
+{
+    return this->sign;
+}
+
+uint16_t ExtendedPrecission::getExponent()
+{
+    return this->exponent;
+}
+
+uint64_t ExtendedPrecission::getMantissa()
+{
+    return this->mantissa;
 }
