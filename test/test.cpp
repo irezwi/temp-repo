@@ -92,7 +92,7 @@ TEST(LessOperator, FirstGreater)
     EXPECT_EQ(false, ep1 < ep2);
 }
 
-TEST(LessOperator, BothSame)
+TEST(LessOperator, SecondGreater)
 {
     ExtendedPrecission ep1(127.8);
     ExtendedPrecission ep2(130.3);
