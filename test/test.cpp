@@ -52,6 +52,54 @@ TEST(EqualOperator, SecondGreater)
     EXPECT_EQ(false, ep1 == ep2);
 }
 
+TEST(GreaterOperator, BothSame)
+{
+    ExtendedPrecission ep1(127.8);
+    ExtendedPrecission ep2(127.8);
+
+    EXPECT_EQ(false, ep1 > ep2);
+}
+
+TEST(GreaterOperator, FirstGreater)
+{
+    ExtendedPrecission ep1(130.3);
+    ExtendedPrecission ep2(127.8);
+
+    EXPECT_EQ(true, ep1 > ep2);
+}
+
+TEST(GreaterOperator, SecondGreater)
+{
+    ExtendedPrecission ep1(127.8);
+    ExtendedPrecission ep2(130.3);
+
+    EXPECT_EQ(false, ep1 > ep2);
+}
+
+TEST(LessOperator, BothSame)
+{
+    ExtendedPrecission ep1(127.8);
+    ExtendedPrecission ep2(127.8);
+
+    EXPECT_EQ(false, ep1 < ep2);
+}
+
+TEST(LessOperator, FirstGreater)
+{
+    ExtendedPrecission ep1(130.3);
+    ExtendedPrecission ep2(127.8);
+
+    EXPECT_EQ(false, ep1 < ep2);
+}
+
+TEST(LessOperator, BothSame)
+{
+    ExtendedPrecission ep1(127.8);
+    ExtendedPrecission ep2(130.3);
+
+    EXPECT_EQ(true, ep1 < ep2);
+}
+
 TEST(DISABLED_AddingTest, BothPositive)
 {
     ExtendedPrecission ep1(12.5);
