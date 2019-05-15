@@ -104,6 +104,68 @@ TEST(DISABLED_AddingTest, FirstNegativeSecondPositive)
     EXPECT_EQ(216, ep.getMantissa());
 }
 
+/*
+TEST(DISABLED_SubtractingTest, BothPositive)
+{
+    ExtendedPrecission ep1(12.5);
+    ExtendedPrecission ep2(12.5);
+
+    ExtendedPrecission result = ep1 - ep2;
+
+    EXPECT_EQ(0, result.getSign());
+    EXPECT_EQ(0, result.getExponent());
+    EXPECT_EQ(0, result.getMantissa());
+}
+
+TEST(DISABLED_SubtractingTest, BothNegative)
+{
+    ExtendedPrecission ep1(-5.0);
+    ExtendedPrecission ep2(-7.5);
+
+    ExtendedPrecission result = ep1 - ep2;
+
+    EXPECT_EQ(1, result.getSign());
+    EXPECT_EQ(0, result.getExponent());
+    EXPECT_EQ(200, result.getMantissa());
+}
+
+TEST(DISABLED_SubtractingTest, FirstPositiveSecondNegative)
+{
+    ExtendedPrecission ep1(2.25);
+    ExtendedPrecission ep2(-14.75);
+
+    ExtendedPrecission result = ep1 - ep2;
+
+    EXPECT_EQ(1, result.getSign());
+    EXPECT_EQ(0, result.getExponent());
+    EXPECT_EQ(200, result.getMantissa());
+}
+
+TEST(DISABLED_SubtractingTest, FirstNegativeSecondPositive)
+{
+    ExtendedPrecission ep1(-2.25);
+    ExtendedPrecission ep2(-14.75);
+
+    ExtendedPrecission result = ep1 - ep2;
+
+    EXPECT_EQ(0, result.getSign());
+    EXPECT_EQ(0, result.getExponent());
+    EXPECT_EQ(200, result.getMantissa());
+}
+
+TEST(DISABLED_SubtractingTest, OneOfNumbersEqualZero)
+{
+    ExtendedPrecission ep1(0.0);
+    ExtendedPrecission ep2(-12.5);
+
+    ExtendedPrecission result = ep1 - ep2;
+
+    EXPECT_EQ(0, result.getSign());
+    EXPECT_EQ(0, result.getExponent());
+    EXPECT_EQ(0, result.getMantissa());
+}
+*/
+
 GTEST_API_ int main(int argc, char **argv)
 {
     printf("Running main() from %s\n", __FILE__);

@@ -3,7 +3,6 @@
 
 void ConvertToIeeeExtended(long double num, char *bytes);
 void printBinary(char c);
-void conv();
 
 std::string ExtendedPrecission::toString()
 {
@@ -175,11 +174,15 @@ void printBinary(char c)
 
 ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
 {
+    // TODO: implement this
     ExtendedPrecission result(0.0);
     if (this->sign == 1 && num.sign == 1)
         result.sign = 1;
     if (this->sign == 0 && num.sign == 0)
         result.sign = 0;
+
+    int exponentBias = 16383;
+    result.exponent = this->exponent + num.getExponent() - exponentBias;
 
     return result;
 }
@@ -195,40 +198,19 @@ bool ExtendedPrecission::operator==(ExtendedPrecission num)
 
 bool ExtendedPrecission::operator>(ExtendedPrecission num)
 {
-    if (this->sign < num.getSign())
-    {
+    if (this->sign > num.getSign())
         return true;
-    }
-    else if (this->sign == num.getSign())
-    {
-        if (this->exponent > num.getExponent())
-        {
-            return true;
-        }
-        else if (this->exponent == num.getExponent())
-        {
-            if (this->mantissa > num.getMantissa())
-            {
-                return true;
-            }
-            else if (this->mantissa == num.getMantissa())
-            {
-                return false;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
-    else
-    {
+
+    if (this->sign < num.getSign())
         return false;
-    }
+
+    if (this->exponent > num.getExponent())
+        return true;
+
+    if (this->exponent < num.getExponent())
+        return false;
+
+    return this->mantissa > num.getMantissa();
 }
 
 bool ExtendedPrecission::operator<(ExtendedPrecission num)
@@ -236,12 +218,6 @@ bool ExtendedPrecission::operator<(ExtendedPrecission num)
     if (*this > num || *this == num)
         return false;
     return true;
-}
-
-void conv()
-{
-    __uint128_t a = 0b00000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000;
-    std::cout << std::bitset<128>(a).to_string();
 }
 
 uint8_t ExtendedPrecission::getSign()
