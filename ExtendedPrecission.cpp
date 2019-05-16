@@ -174,33 +174,136 @@ void printBinary(char c)
 
 ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
 {
-    // TODO: implement this
     ExtendedPrecission result(0.0);
 
     if (this->sign == num.getSign())
+    {
         result.sign = this->sign;
-    else if (this->exponent > num.getExponent())
+        if(this->exponent == num.getExponent())
+        {
+            result.exponent = this->exponent;
+            result.mantissa = this->mantissa + num.getMantissa();
+        }
+        else if(this->exponent < num.getExponent())
+        {
+            result.exponent = num.getExponent();
+            result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) + num.getMantissa();
+        }
+        else
+        {
+            result.exponent = this->exponent;
+            result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) + this->mantissa;
+        }
+    }
+    else if (*this > num)
+    {
         result.sign = this->sign;
+        if(this->exponent == num.getExponent())
+        {
+            result.exponent = this->exponent;
+            result.mantissa = this->mantissa - num.getMantissa();
+        }
+        else if(this->exponent < num.getExponent())
+        {
+            result.exponent = num.getExponent();
+            result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) - num.getMantissa();
+        }
+        else
+        {
+            result.exponent = this->exponent;
+            result.mantissa = this->mantissa - (num.getMantissa() * pow(2, num.getExponent() - this->exponent));
+        }
+    }
     else
+    {
         result.sign = num.getSign();
-    
-    
-    if(this->exponent == num.getExponent())
-    {
-        result.exponent = this->exponent;
-        result.mantissa = this->mantissa + num.getMantissa();
+        if(this->exponent == num.getExponent())
+        {
+            result.exponent = this->exponent;
+            result.mantissa = num.getMantissa() - this->mantissa;
+        }
+        else if(this->exponent < num.getExponent())
+        {
+            result.exponent = num.getExponent();
+            result.mantissa = num.getMantissa() - (this->mantissa * pow(2, this->exponent - num.getExponent()));
+        }
+        else
+        {
+            result.exponent = this->exponent;
+            result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) - this->mantissa;
+        }
     }
-    else if(this->exponent < num.getExponent())
+    
+    //TODO weryfikacja formatu wyniku (kiedy dodac do/odjac od wykladnika)
+    return result;
+}
+
+
+ExtendedPrecission ExtendedPrecission::operator-(ExtendedPrecission num)
+{
+    ExtendedPrecission result(0.0);
+
+    if (num.getSign() != 0)
     {
-        result.exponent = num.getExponent();
-        result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) + num.getMantissa();
+        result = *this + num;
+    }
+    else if (this->sign != 0)
+    {
+        result.sign = this->sign;
+        if(this->exponent == num.getExponent())
+        {
+            result.exponent = this->exponent;
+            result.mantissa = num.getMantissa() - this->mantissa;
+        }
+        else if(this->exponent < num.getExponent())
+        {
+            result.exponent = num.getExponent();
+            result.mantissa = num.getMantissa() - (this->mantissa * pow(2, this->exponent - num.getExponent()));
+        }
+        else
+        {
+            result.exponent = this->exponent;
+            result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) - this->mantissa;
+        }
+    }
+    else if(*this > num)
+    {
+        result.sign = this->sign;
+        if(this->exponent == num.getExponent())
+        {
+            result.exponent = this->exponent;
+            result.mantissa = this->mantissa - num.getMantissa();
+        }
+        else if(this->exponent < num.getExponent())
+        {
+            result.exponent = num.getExponent();
+            result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) - num.getMantissa();
+        }
+        else
+        {
+            result.exponent = this->exponent;
+            result.mantissa = this->mantissa - (num.getMantissa() * pow(2, num.getExponent() - this->exponent));
+        }
     }
     else
-    {
-        result.exponent = this->exponent;
-        result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) + this->mantissa;
-    }
-    
+        result.sign = 0x8000;
+        if(this->exponent == num.getExponent())
+        {
+            result.exponent = this->exponent;
+            result.mantissa = num.getMantissa() - this->mantissa;
+        }
+        else if(this->exponent < num.getExponent())
+        {
+            result.exponent = num.getExponent();
+            result.mantissa = num.getMantissa() - (this->mantissa * pow(2, this->exponent - num.getExponent()));
+        }
+        else
+        {
+            result.exponent = this->exponent;
+            result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) - this->mantissa;
+        }
+
+    //TODO weryfikacja formatu wyniku (kiedy dodac do/odjac od wykladnika)
     return result;
 }
 
@@ -215,10 +318,9 @@ bool ExtendedPrecission::operator==(ExtendedPrecission num)
 
 bool ExtendedPrecission::operator>(ExtendedPrecission num)
 {
-    if (this->sign > num.getSign())
+    if (this->sign == 0 && num.getSign() != 0)
         return true;
-
-    if (this->sign < num.getSign())
+    else
         return false;
 
     if (this->exponent > num.getExponent())
