@@ -2,12 +2,17 @@
 
 int main()
 {
-    ExtendedPrecission ep(12.5);
-    std::cout << "12.5" << std::endl
+    ExtendedPrecission ep(4.0);
+    std::cout << "4" << std::endl
               << ep.toString() << std::endl;
 
-    ExtendedPrecission ep2(-71.5);
-    std::cout << "-71.5" << std::endl
+    ExtendedPrecission ep2(-2.0);
+    std::cout << "-2" << std::endl
               << ep2.toString() << std::endl;
+
+    ExtendedPrecission sum = ep+ep2;
+    std::cout << "wynik: " << std::endl
+              << sum.toString() << std::endl;
+
     return 0;
 }

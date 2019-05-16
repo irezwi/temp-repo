@@ -69,9 +69,9 @@ ExtendedPrecission::ExtendedPrecission(long double num)
     }
     this->mantissa = man & manMask;
 
-    std::cout << "sign: " << std::to_string(this->sign) << std::endl;
-    std::cout << "exponent: " << this->exponent << std::endl;
-    std::cout << "mantissa: " << this->mantissa << std::endl;
+    //std::cout << "sign: " << std::to_string(this->sign) << std::endl;
+    //std::cout << "exponent: " << this->exponent << std::endl;
+    //std::cout << "mantissa: " << this->mantissa << std::endl;
 }
 
 std::string ExtendedPrecission::intToBinaryString(long long int num)
@@ -176,14 +176,31 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
 {
     // TODO: implement this
     ExtendedPrecission result(0.0);
-    if (this->sign == 1 && num.sign == 1)
-        result.sign = 1;
-    if (this->sign == 0 && num.sign == 0)
-        result.sign = 0;
 
-    int exponentBias = 16383;
-    result.exponent = this->exponent + num.getExponent() - exponentBias;
-
+    if (this->sign == num.getSign())
+        result.sign = this->sign;
+    else if (this->exponent > num.getExponent())
+        result.sign = this->sign;
+    else
+        result.sign = num.getSign();
+    
+    
+    if(this->exponent == num.getExponent())
+    {
+        result.exponent = this->exponent;
+        result.mantissa = this->mantissa + num.getMantissa();
+    }
+    else if(this->exponent < num.getExponent())
+    {
+        result.exponent = num.getExponent();
+        result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) + num.getMantissa();
+    }
+    else
+    {
+        result.exponent = this->exponent;
+        result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) + this->mantissa;
+    }
+    
     return result;
 }
 
