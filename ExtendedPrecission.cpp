@@ -179,12 +179,12 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
     if (this->sign == num.getSign())
     {
         result.sign = this->sign;
-        if(this->exponent == num.getExponent())
+        if (this->exponent == num.getExponent())
         {
             result.exponent = this->exponent;
             result.mantissa = this->mantissa + num.getMantissa();
         }
-        else if(this->exponent < num.getExponent())
+        else if (this->exponent < num.getExponent())
         {
             result.exponent = num.getExponent();
             result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) + num.getMantissa();
@@ -198,12 +198,12 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
     else if (*this > num)
     {
         result.sign = this->sign;
-        if(this->exponent == num.getExponent())
+        if (this->exponent == num.getExponent())
         {
             result.exponent = this->exponent;
             result.mantissa = this->mantissa - num.getMantissa();
         }
-        else if(this->exponent < num.getExponent())
+        else if (this->exponent < num.getExponent())
         {
             result.exponent = num.getExponent();
             result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) - num.getMantissa();
@@ -217,12 +217,12 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
     else
     {
         result.sign = num.getSign();
-        if(this->exponent == num.getExponent())
+        if (this->exponent == num.getExponent())
         {
             result.exponent = this->exponent;
             result.mantissa = num.getMantissa() - this->mantissa;
         }
-        else if(this->exponent < num.getExponent())
+        else if (this->exponent < num.getExponent())
         {
             result.exponent = num.getExponent();
             result.mantissa = num.getMantissa() - (this->mantissa * pow(2, this->exponent - num.getExponent()));
@@ -233,11 +233,10 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
             result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) - this->mantissa;
         }
     }
-    
+
     //TODO weryfikacja formatu wyniku (kiedy dodac do/odjac od wykladnika)
     return result;
 }
-
 
 ExtendedPrecission ExtendedPrecission::operator-(ExtendedPrecission num)
 {
@@ -250,12 +249,12 @@ ExtendedPrecission ExtendedPrecission::operator-(ExtendedPrecission num)
     else if (this->sign != 0)
     {
         result.sign = this->sign;
-        if(this->exponent == num.getExponent())
+        if (this->exponent == num.getExponent())
         {
             result.exponent = this->exponent;
             result.mantissa = num.getMantissa() - this->mantissa;
         }
-        else if(this->exponent < num.getExponent())
+        else if (this->exponent < num.getExponent())
         {
             result.exponent = num.getExponent();
             result.mantissa = num.getMantissa() - (this->mantissa * pow(2, this->exponent - num.getExponent()));
@@ -266,15 +265,15 @@ ExtendedPrecission ExtendedPrecission::operator-(ExtendedPrecission num)
             result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) - this->mantissa;
         }
     }
-    else if(*this > num)
+    else if (*this > num)
     {
         result.sign = this->sign;
-        if(this->exponent == num.getExponent())
+        if (this->exponent == num.getExponent())
         {
             result.exponent = this->exponent;
             result.mantissa = this->mantissa - num.getMantissa();
         }
-        else if(this->exponent < num.getExponent())
+        else if (this->exponent < num.getExponent())
         {
             result.exponent = num.getExponent();
             result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) - num.getMantissa();
@@ -287,21 +286,21 @@ ExtendedPrecission ExtendedPrecission::operator-(ExtendedPrecission num)
     }
     else
         result.sign = 0x8000;
-        if(this->exponent == num.getExponent())
-        {
-            result.exponent = this->exponent;
-            result.mantissa = num.getMantissa() - this->mantissa;
-        }
-        else if(this->exponent < num.getExponent())
-        {
-            result.exponent = num.getExponent();
-            result.mantissa = num.getMantissa() - (this->mantissa * pow(2, this->exponent - num.getExponent()));
-        }
-        else
-        {
-            result.exponent = this->exponent;
-            result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) - this->mantissa;
-        }
+    if (this->exponent == num.getExponent())
+    {
+        result.exponent = this->exponent;
+        result.mantissa = num.getMantissa() - this->mantissa;
+    }
+    else if (this->exponent < num.getExponent())
+    {
+        result.exponent = num.getExponent();
+        result.mantissa = num.getMantissa() - (this->mantissa * pow(2, this->exponent - num.getExponent()));
+    }
+    else
+    {
+        result.exponent = this->exponent;
+        result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) - this->mantissa;
+    }
 
     //TODO weryfikacja formatu wyniku (kiedy dodac do/odjac od wykladnika)
     return result;
@@ -318,10 +317,8 @@ bool ExtendedPrecission::operator==(ExtendedPrecission num)
 
 bool ExtendedPrecission::operator>(ExtendedPrecission num)
 {
-    if (this->sign == 0 && num.getSign() != 0)
+    if (this->sign < num.getSign())
         return true;
-    else
-        return false;
 
     if (this->exponent > num.getExponent())
         return true;
