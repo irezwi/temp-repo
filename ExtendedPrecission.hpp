@@ -21,7 +21,7 @@ public:
   bool operator>(ExtendedPrecission num);
   bool operator<(ExtendedPrecission num);
   std::string toString();
-  std::string intToBinaryString(long long int num);
+  std::string intToBinaryString(unsigned long long int num);
   uint8_t getSign();
   uint16_t getExponent();
   uint64_t getMantissa();

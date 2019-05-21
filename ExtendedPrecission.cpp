@@ -17,18 +17,14 @@ std::string ExtendedPrecission::toString()
     }
     return s;*/
     std::string s = "";
-    s += intToBinaryString(this->sign);
+    if (this->sign == 0)
+        s += '0';
+    else
+        s += '1';
     s += " ";
     s += intToBinaryString(this->exponent);
     s += " ";
     s += intToBinaryString(this->mantissa);
-    if (s.length() < 82)
-    {
-        for (int i = s.length(); i < 82; i++)
-        {
-            s += "0";
-        }
-    }
     return s;
 }
 
@@ -48,24 +44,13 @@ ExtendedPrecission::ExtendedPrecission(long double num)
     s = s >> 7;
     this->sign = s;
 
-    // Set mantissa field
-    int byteWithLastOne = 2;
-    for (int i = byteWithLastOne; i < 10; i++)
-    {
-        if ((int)this->byteBuffer[i] != 0)
-        {
-            byteWithLastOne = i;
-        }
-    }
     uint64_t man = 0;
-    uint64_t manMask = 0b0000000000000000000000000000000000000000000000000000000011111111;
+    uint64_t manMask = 0b1111111111111111111111111111111111111111111111111111111111111111;
     man = this->byteBuffer[2];
-    for (int i = 2; i != byteWithLastOne; i++)
+    for (int i = 3; i < 10; i++)
     {
         man = man << 8;
         man += this->byteBuffer[i];
-        manMask = manMask << 8;
-        manMask += 0b11111111;
     }
     this->mantissa = man & manMask;
 
@@ -74,7 +59,7 @@ ExtendedPrecission::ExtendedPrecission(long double num)
     //std::cout << "mantissa: " << this->mantissa << std::endl;
 }
 
-std::string ExtendedPrecission::intToBinaryString(long long int num)
+std::string ExtendedPrecission::intToBinaryString(unsigned long long int num)
 {
     std::string s = "";
     while (num > 0)
