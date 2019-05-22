@@ -249,17 +249,14 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
         if (this->exponent == num.getExponent())
         {
             result.exponent = this->exponent;
-            result.mantissa = this->mantissa - num.getMantissa();
+            result.mantissa = sub(this->mantissa, num.getMantissa());
+            result.exponent = carryExponent(result.exponent);
         }
-        else if (this->exponent < num.getExponent())
+        else 
         {
             result.exponent = num.getExponent();
             result.mantissa = scaleMantissa(*this, num);
-        }
-        else
-        {
-            result.exponent = this->exponent;
-            result.mantissa = this->mantissa - (num.getMantissa() * pow(2, num.getExponent() - this->exponent));
+            result.exponent = carryExponent(result.exponent);
         }
     }
     else
@@ -268,20 +265,16 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
         if (this->exponent == num.getExponent())
         {
             result.exponent = this->exponent;
-            result.mantissa = num.getMantissa() - this->mantissa;
-        }
-        else if (this->exponent < num.getExponent())
-        {
-            result.exponent = num.getExponent();
-            result.mantissa = num.getMantissa() - (this->mantissa * pow(2, this->exponent - num.getExponent()));
+            result.mantissa = sub(num.getMantissa(), this->mantissa);
+            result.exponent = carryExponent(result.exponent);
         }
         else
         {
-            result.exponent = this->exponent;
-            result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) - this->mantissa;
+            result.exponent = num.getExponent();
+            result.mantissa = scaleMantissa(num, *this);
+            result.exponent = carryExponent(result.exponent);
         }
     }
-
     //TODO weryfikacja formatu wyniku (kiedy dodac do/odjac od wykladnika)
     return result;
 }
