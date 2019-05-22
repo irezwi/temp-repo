@@ -2,10 +2,10 @@
 
 int main()
 {
-    ExtendedPrecission ep(3.0);
+    ExtendedPrecission ep(2.0);
     std::cout << "Exponent: " << ep.getExponent() <<std::endl
             << "Mantissa: " << ep.getMantissa() <<std::endl
-            << "3" << std::endl
+            << "2" << std::endl
             << ep.toString() << std::endl;
 
     ExtendedPrecission ep2(2.0);
@@ -21,8 +21,8 @@ int main()
             << sum.toString() << std::endl;
 
     ExtendedPrecission dif = ep-ep2;
-    std::cout << "difExponent: " << sum.getExponent() << std::endl
-            << "difMantissa: " << sum.getMantissa() << std::endl
+    std::cout << "subExponent: " << sum.getExponent() << std::endl
+            << "subMantissa: " << sum.getMantissa() << std::endl
             << "wynik: " << std::endl
             << sum.toString() << std::endl;
 

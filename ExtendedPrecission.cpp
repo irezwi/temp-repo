@@ -3,6 +3,7 @@
 
 void ConvertToIeeeExtended(long double num, char *bytes);
 void printBinary(char c);
+int64_t carry = 0;
 
 std::string ExtendedPrecission::toString()
 {
@@ -27,6 +28,72 @@ std::string ExtendedPrecission::toString()
     s += intToBinaryString(this->mantissa);
     return s;
 }
+
+uint16_t carryExponent(uint16_t exp)
+{
+    if (carry != 0)
+    {
+        exp += carry;
+        carry = 0;
+        return exp;
+    }
+}
+
+uint64_t sum(uint64_t num1, uint64_t num2)
+{
+    carry = 0;
+    __int128_t result = static_cast<__int128_t>(num1) + static_cast<__int128_t>(num2);
+    while (result > UINT64_MAX)
+    {
+        result -= UINT64_MAX;
+        carry++;
+    }
+    result = static_cast<uint64_t>(result);
+    return result;
+}
+uint64_t sub(uint64_t num1, uint64_t num2)
+{
+    carry = 0;
+    __int128_t result = static_cast<__int128_t>(num1) - static_cast<__int128_t>(num2);
+    
+    while (result < 0)
+    {
+        result += UINT64_MAX;
+        carry--;
+    }
+    result = static_cast<uint64_t>(result);
+
+    return result;
+}
+
+uint64_t scaleMantissa(ExtendedPrecission num1, ExtendedPrecission num2)
+{
+    __int128_t scaledMantissa;
+    int64_t expDiff;
+    if (num1 > num2)
+    {
+        expDiff = num1.getExponent() - num2.getExponent();
+        scaledMantissa = static_cast<__int128_t>(num2.getMantissa()) * pow(2, expDiff) + num1.getMantissa();
+    }
+    else
+    {
+        expDiff = num2.getExponent() - num1.getExponent();
+        scaledMantissa = static_cast<__int128_t>(num1.getMantissa()) * pow(2, expDiff) + num2.getMantissa(); 
+    }
+    while (scaledMantissa > UINT64_MAX)
+    {
+        scaledMantissa -= UINT64_MAX;
+        carry++;
+    }
+    while (scaledMantissa < 0)
+    {
+        scaledMantissa += UINT64_MAX;
+        carry--;
+    }
+    scaledMantissa = static_cast<uint64_t>(scaledMantissa);
+    return scaledMantissa;   
+}
+
 
 ExtendedPrecission::ExtendedPrecission(long double num)
 {
@@ -167,17 +234,13 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
         if (this->exponent == num.getExponent())
         {
             result.exponent = this->exponent;
-            result.mantissa = this->mantissa + num.getMantissa();
-        }
-        else if (this->exponent < num.getExponent())
-        {
-            result.exponent = num.getExponent();
-            result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) + num.getMantissa();
+            result.mantissa = sum(this->mantissa, num.getMantissa());
+            result.exponent = carryExponent(result.exponent);
         }
         else
         {
-            result.exponent = this->exponent;
-            result.mantissa = num.getMantissa() * pow(2, num.getExponent() - this->exponent) + this->mantissa;
+            result.mantissa = scaleMantissa(*this, num);
+            result.exponent = carryExponent(result.exponent);
         }
     }
     else if (*this > num)
@@ -191,7 +254,7 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
         else if (this->exponent < num.getExponent())
         {
             result.exponent = num.getExponent();
-            result.mantissa = this->mantissa * pow(2, this->exponent - num.getExponent()) - num.getMantissa();
+            result.mantissa = scaleMantissa(*this, num);
         }
         else
         {
@@ -222,7 +285,6 @@ ExtendedPrecission ExtendedPrecission::operator+(ExtendedPrecission num)
     //TODO weryfikacja formatu wyniku (kiedy dodac do/odjac od wykladnika)
     return result;
 }
-
 ExtendedPrecission ExtendedPrecission::operator-(ExtendedPrecission num)
 {
     ExtendedPrecission result(0.0);
@@ -270,7 +332,7 @@ ExtendedPrecission ExtendedPrecission::operator-(ExtendedPrecission num)
         }
     }
     else
-        result.sign = 0x8000;
+        result.sign = 1;
     if (this->exponent == num.getExponent())
     {
         result.exponent = this->exponent;
