@@ -6,8 +6,8 @@ TEST(ConvertingTest, PositiveFloatingPoint)
     ExtendedPrecission ep(12.5);
 
     EXPECT_EQ(0, ep.getSign());
-    EXPECT_EQ(16386, ep.getExponent());
-    EXPECT_EQ(200, ep.getMantissa());
+    EXPECT_EQ(0b100000000000010, ep.getExponent());
+    EXPECT_EQ(0b1100100000000000000000000000000000000000000000000000000000000000, ep.getMantissa());
 }
 
 TEST(ConvertingTest, NegativeFloatingPoint)
@@ -15,8 +15,8 @@ TEST(ConvertingTest, NegativeFloatingPoint)
     ExtendedPrecission ep(-12.5);
 
     EXPECT_EQ(1, ep.getSign());
-    EXPECT_EQ(16386, ep.getExponent());
-    EXPECT_EQ(200, ep.getMantissa());
+    EXPECT_EQ(0b100000000000010, ep.getExponent());
+    EXPECT_EQ(0b1100100000000000000000000000000000000000000000000000000000000000, ep.getMantissa());
 }
 
 TEST(ConvertingTest, Zero)
@@ -150,6 +150,54 @@ TEST(DISABLED_AddingTest, FirstNegativeSecondPositive)
     EXPECT_EQ(0, ep.getSign());
     EXPECT_EQ(16385, ep.getExponent());
     EXPECT_EQ(216, ep.getMantissa());
+}
+
+TEST(MultiplyingTest, BothPositive)
+{
+    ExtendedPrecission first(13.5);
+    ExtendedPrecission second(21.5);
+    ExtendedPrecission result = first * second;
+    ExtendedPrecission correct_result(13.5 * 21.5);
+
+    EXPECT_EQ(result.getSign(), correct_result.getSign());
+    EXPECT_EQ(result.getExponent(), correct_result.getExponent());
+    EXPECT_EQ(result.getMantissa(), correct_result.getMantissa());
+}
+
+TEST(MultiplyingTest, FirstPositiveSecondNegative)
+{
+    ExtendedPrecission first(13.5);
+    ExtendedPrecission second(-21.5);
+    ExtendedPrecission result = first * second;
+    ExtendedPrecission correct_result(13.5 * -21.5);
+
+    EXPECT_EQ(result.getSign(), correct_result.getSign());
+    EXPECT_EQ(result.getExponent(), correct_result.getExponent());
+    EXPECT_EQ(result.getMantissa(), correct_result.getMantissa());
+}
+
+TEST(MultiplyingTest, FirstNegativeSecondPositive)
+{
+    ExtendedPrecission first(-13.5);
+    ExtendedPrecission second(21.5);
+    ExtendedPrecission result = first * second;
+    ExtendedPrecission correct_result(-13.5 * 21.5);
+
+    EXPECT_EQ(result.getSign(), correct_result.getSign());
+    EXPECT_EQ(result.getExponent(), correct_result.getExponent());
+    EXPECT_EQ(result.getMantissa(), correct_result.getMantissa());
+}
+
+TEST(MultiplyingTest, BothNegative)
+{
+    ExtendedPrecission first(-13.5);
+    ExtendedPrecission second(-21.5);
+    ExtendedPrecission result = first * second;
+    ExtendedPrecission correct_result(-13.5 * -21.5);
+
+    EXPECT_EQ(result.getSign(), correct_result.getSign());
+    EXPECT_EQ(result.getExponent(), correct_result.getExponent());
+    EXPECT_EQ(result.getMantissa(), correct_result.getMantissa());
 }
 
 /*
