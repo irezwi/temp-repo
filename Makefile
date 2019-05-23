@@ -1,2 +1,2 @@
 all:
-	g++ -o main.out main.cpp ExtendedPrecission.cpp ExtendedPrecission.hpp
+	g++ -g -o main.out main.cpp ExtendedPrecission.cpp ExtendedPrecission.hpp
