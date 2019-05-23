@@ -60,7 +60,6 @@ uint64_t scaleMantissa(ExtendedPrecission num1, ExtendedPrecission num2, Operati
 
     if (op == OperationType::osum)
     {   
-        carry--;
         if (num1 > num2)
         {
             scaledMantissa = pow(2, num2.getExponent() - exponentWeight) * (num1.getMantissa() * pow(2, expDiff) + num2.getMantissa());
@@ -78,7 +77,6 @@ uint64_t scaleMantissa(ExtendedPrecission num1, ExtendedPrecission num2, Operati
 
     if (op == OperationType::osub)
     {
-        carry--;
         if (num1 > num2)
         {
             scaledMantissa = pow(2, num2.getExponent() - exponentWeight) * ((num1.getMantissa() * pow(2, expDiff)) - num2.getMantissa());
@@ -89,9 +87,9 @@ uint64_t scaleMantissa(ExtendedPrecission num1, ExtendedPrecission num2, Operati
         }
         if (num1.getMantissa() == num2.getMantissa())
             scaledMantissa = pow(2, 63);
-        while (scaledMantissa <= 0)
+        while (scaledMantissa > UINT64_MAX)
         {
-            scaledMantissa += pow(2, 63);
+            scaledMantissa = scaledMantissa/2;
             carry--;
         }
     }
